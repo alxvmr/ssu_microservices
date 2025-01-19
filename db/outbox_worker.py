@@ -1,6 +1,6 @@
 import pika
 import time
-from db.model import OutboxMessage, Session
+from model import OutboxMessage, Session
 
 def send_outbox_messages():
     while True:

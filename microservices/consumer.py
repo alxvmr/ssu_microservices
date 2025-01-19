@@ -1,6 +1,5 @@
 import pika
 import time
-import json
 
 def callback(ch, method, properties, body):
     message = body.decode()
