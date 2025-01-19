@@ -5,10 +5,10 @@ def callback(ch, method, properties, body):
     message = body.decode()
     print(f"Service B received: {message}")
     
-    # Обработка сообщения
+    # message processing
     time.sleep(1)
     
-    # Отправка события в Service C
+    # sending an event to Service C
     send_event_to_service_c(message)
 
 def send_event_to_service_c(message):

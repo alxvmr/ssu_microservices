@@ -9,14 +9,14 @@ def send_outbox_messages():
         
         for message in messages:
             try:
-                # Отправка сообщения в RabbitMQ
+                # sending a message to RabbitMQ
                 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
                 channel = connection.channel()
                 channel.queue_declare(queue='service_b_queue')
                 channel.basic_publish(exchange='', routing_key='service_b_queue', body=message.message)
                 connection.close()
                 
-                # Удаление сообщения из Outbox после успешной отправки
+                # deleting a message from Outbox after successful sending
                 session.delete(message)
                 session.commit()
                 print(f"Sent message: {message.message} and removed from Outbox")

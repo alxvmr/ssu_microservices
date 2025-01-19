@@ -5,13 +5,13 @@ from db.model import create_tables, OutboxMessage, Session
 
 app = Flask(__name__)
 
-# create_tables() # используется 1 раз для создания БД
+# create_tables() # is used once to create the database
 
 @app.route('/send', methods=['POST'])
 def send_message():
     message = request.json.get('message')
     
-    # Сохраняем сообщение в Outbox
+    # save the message to Outbox
     session = Session()
     outbox_message = OutboxMessage(message=message)
     session.add(outbox_message)
