@@ -1,20 +1,22 @@
 from flask import Flask, request, jsonify
-import pika
+from db.model import create_tables, OutboxMessage, Session
 
 app = Flask(__name__)
+
+# create_tables() # используется 1 раз для создания БД
 
 @app.route('/send', methods=['POST'])
 def send_message():
     message = request.json.get('message')
     
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-    channel = connection.channel()
+    # Сохраняем сообщение в Outbox
+    session = Session()
+    outbox_message = OutboxMessage(message=message)
+    session.add(outbox_message)
+    session.commit()
+    session.close()
     
-    channel.queue_declare(queue='service_b_queue')
-    channel.basic_publish(exchange='', routing_key='service_b_queue', body=message)
-    
-    connection.close()
-    return jsonify({"status": "Message sent", "message": message})
+    return jsonify({"status": "Message saved to Outbox", "message": message})
 
 if __name__ == '__main__':
     app.run(port=5001)
